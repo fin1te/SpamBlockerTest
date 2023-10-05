@@ -1,6 +1,7 @@
 package com.utkarsha.spamblocker.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.utkarsha.spamblocker.R
 import com.utkarsha.spamblocker.adapter.SmsAdapter
 import com.utkarsha.spamblocker.databinding.FragmentAllSmsBinding
 import com.utkarsha.spamblocker.repository.SmsRepo
+import com.utkarsha.spamblocker.utils.SmsPermsManager
 
 class AllSmsFragment : Fragment() {
 
@@ -37,8 +39,15 @@ class AllSmsFragment : Fragment() {
         allSmsRecyclerView = binding.allSmsRecyclerView
         allSmsRecyclerView.setHasFixedSize(true)
         allSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        allSmsAdapter = SmsAdapter(SmsRepo.getMockSms())
+        allSmsAdapter = SmsAdapter(SmsRepo.readAllSms(requireContext()))
         allSmsRecyclerView.adapter = allSmsAdapter
+
+        if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {
+            Log.d("Testlog All", "SMS Read Permission granted")
+        } else {
+            Log.d("Testlog All", "SMS Read Permission not granted")
+            SmsPermsManager.requestReadSmsPermission(requireActivity())
+        }
     }
 
 

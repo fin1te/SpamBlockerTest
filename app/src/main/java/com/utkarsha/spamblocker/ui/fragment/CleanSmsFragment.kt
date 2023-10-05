@@ -1,6 +1,7 @@
 package com.utkarsha.spamblocker.ui.fragment
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,7 @@ import com.utkarsha.spamblocker.R
 import com.utkarsha.spamblocker.adapter.SmsAdapter
 import com.utkarsha.spamblocker.databinding.FragmentCleanSmsBinding
 import com.utkarsha.spamblocker.repository.SmsRepo
+import com.utkarsha.spamblocker.utils.SmsPermsManager
 
 class CleanSmsFragment : Fragment() {
 
@@ -39,6 +41,13 @@ class CleanSmsFragment : Fragment() {
         cleanSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         cleanSmsAdapter = SmsAdapter(SmsRepo.getMockSms())
         cleanSmsRecyclerView.adapter = cleanSmsAdapter
+
+        if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {
+            Log.d("Testlog Clean", "SMS Read Permission granted")
+        } else {
+            Log.d("Testlog Clean", "SMS Read Permission not granted")
+            SmsPermsManager.requestReadSmsPermission(requireActivity())
+        }
     }
 
     override fun onDestroy() {
