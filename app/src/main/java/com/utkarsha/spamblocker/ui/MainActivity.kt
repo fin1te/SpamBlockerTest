@@ -4,9 +4,11 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.tabs.TabLayout
-import com.utkarsha.spamblocker.R
 import com.utkarsha.spamblocker.adapter.ViewPagerAdapter
 import com.utkarsha.spamblocker.databinding.ActivityMainBinding
+import com.utkarsha.spamblocker.ui.fragment.AllSmsFragment
+import com.utkarsha.spamblocker.ui.fragment.CleanSmsFragment
+import com.utkarsha.spamblocker.ui.fragment.SpamSmsFragment
 
 class MainActivity : AppCompatActivity() {
 
