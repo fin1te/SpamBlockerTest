@@ -13,6 +13,7 @@ import com.utkarsha.spamblocker.adapter.SmsAdapter
 import com.utkarsha.spamblocker.databinding.FragmentCleanSmsBinding
 import com.utkarsha.spamblocker.repository.SmsRepo
 import com.utkarsha.spamblocker.utils.SmsPermsManager
+import kotlinx.coroutines.runBlocking
 
 class CleanSmsFragment : Fragment() {
 
@@ -36,17 +37,19 @@ class CleanSmsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        cleanSmsRecyclerView = binding.cleanSmsRecyclerView
-        cleanSmsRecyclerView.setHasFixedSize(true)
-        cleanSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        cleanSmsAdapter = SmsAdapter(SmsRepo.getMockSms())
-        cleanSmsRecyclerView.adapter = cleanSmsAdapter
+        runBlocking {
+            cleanSmsRecyclerView = binding.cleanSmsRecyclerView
+            cleanSmsRecyclerView.setHasFixedSize(true)
+            cleanSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            cleanSmsAdapter = SmsAdapter(SmsRepo.readCleanSms(requireContext()), requireContext())
+            cleanSmsRecyclerView.adapter = cleanSmsAdapter
 
-        if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {
-            Log.d("Testlog Clean", "SMS Read Permission granted")
-        } else {
-            Log.d("Testlog Clean", "SMS Read Permission not granted")
-            SmsPermsManager.requestReadSmsPermission(requireActivity())
+            if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {
+                Log.d("Testlog Clean", "SMS Read Permission granted")
+            } else {
+                Log.d("Testlog Clean", "SMS Read Permission not granted")
+                SmsPermsManager.requestReadSmsPermission(requireActivity())
+            }
         }
     }
 

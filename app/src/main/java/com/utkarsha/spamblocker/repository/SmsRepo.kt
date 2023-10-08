@@ -7,6 +7,8 @@ import android.provider.Telephony
 import android.provider.Telephony.*
 import android.util.Log
 import com.utkarsha.spamblocker.model.Sms
+import com.utkarsha.spamblocker.utils.SpamModel
+import kotlinx.coroutines.runBlocking
 
 object SmsRepo {
 
@@ -33,41 +35,137 @@ object SmsRepo {
         ).shuffled()
     }
 
-    fun readAllSms(context: Context): List<Sms> {
+    suspend fun readAllSms(context: Context): List<Sms> {
         val messages = mutableListOf<Sms>()
+        val spamModel = SpamModel(context)
 
-        try {
-            val contentResolver: ContentResolver = context.contentResolver
-            val uri: Uri = Telephony.Sms.Inbox.CONTENT_URI
-            val projection = arrayOf(
-                Telephony.Sms.Inbox.ADDRESS,
-                Telephony.Sms.Inbox.BODY,
-                Telephony.Sms.Inbox.DATE
-            )
+        runBlocking {
+            try {
+                val contentResolver: ContentResolver = context.contentResolver
+                val uri: Uri = Telephony.Sms.Inbox.CONTENT_URI
+                val projection = arrayOf(
+                    Telephony.Sms.Inbox.ADDRESS,
+                    Telephony.Sms.Inbox.BODY,
+                    Telephony.Sms.Inbox.DATE
+                )
 
-            val cursor = contentResolver.query(
-                uri,
-                projection,
-                null,
-                null,
-                Telephony.Sms.Inbox.DEFAULT_SORT_ORDER
-            )
+                val cursor = contentResolver.query(
+                    uri,
+                    projection,
+                    null,
+                    null,
+                    Telephony.Sms.Inbox.DEFAULT_SORT_ORDER
+                )
 
-            cursor?.use {
-                val senderIndex = it.getColumnIndex(Telephony.Sms.Inbox.ADDRESS)
-                val bodyIndex = it.getColumnIndex(Telephony.Sms.Inbox.BODY)
-                val dateIndex = it.getColumnIndex(Telephony.Sms.Inbox.DATE)
+                cursor?.use {
+                    val senderIndex = it.getColumnIndex(Telephony.Sms.Inbox.ADDRESS)
+                    val bodyIndex = it.getColumnIndex(Telephony.Sms.Inbox.BODY)
+                    val dateIndex = it.getColumnIndex(Telephony.Sms.Inbox.DATE)
 
-                while (it.moveToNext()) {
-                    val sender = it.getString(senderIndex)
-                    val messageBody = it.getString(bodyIndex)
-                    val timestamp = it.getLong(dateIndex)
+                    while (it.moveToNext()) {
+                        val sender = it.getString(senderIndex)
+                        val messageBody = it.getString(bodyIndex)
+                        val timestamp = it.getLong(dateIndex)
+                        val isSpam = spamModel.classify(messageBody)
 
-                    messages.add(Sms(sender, messageBody, randomAvatarUrl()))
+                        messages.add(Sms(sender, messageBody, randomAvatarUrl(), isSpam))
+                    }
                 }
+            } catch (e: Exception) {
+                Log.e("Testlog SmsRepo", "Error reading SMS: ${e.message}")
             }
-        } catch (e: Exception) {
-            Log.e("Testlog SmsRepo", "Error reading SMS: ${e.message}")
+        }
+
+        return messages
+    }
+
+    suspend fun readSpamSms(context: Context): List<Sms> {
+        val messages = mutableListOf<Sms>()
+        val spamModel = SpamModel(context)
+
+        runBlocking {
+            try {
+                val contentResolver: ContentResolver = context.contentResolver
+                val uri: Uri = Telephony.Sms.Inbox.CONTENT_URI
+                val projection = arrayOf(
+                    Telephony.Sms.Inbox.ADDRESS,
+                    Telephony.Sms.Inbox.BODY,
+                    Telephony.Sms.Inbox.DATE
+                )
+
+                val cursor = contentResolver.query(
+                    uri,
+                    projection,
+                    null,
+                    null,
+                    Telephony.Sms.Inbox.DEFAULT_SORT_ORDER
+                )
+
+                cursor?.use {
+                    val senderIndex = it.getColumnIndex(Telephony.Sms.Inbox.ADDRESS)
+                    val bodyIndex = it.getColumnIndex(Telephony.Sms.Inbox.BODY)
+                    val dateIndex = it.getColumnIndex(Telephony.Sms.Inbox.DATE)
+
+                    while (it.moveToNext()) {
+                        val sender = it.getString(senderIndex)
+                        val messageBody = it.getString(bodyIndex)
+                        val timestamp = it.getLong(dateIndex)
+                        val isSpam = spamModel.classify(messageBody)
+
+                        if(isSpam == "Spam") {
+                            messages.add(Sms(sender, messageBody, randomAvatarUrl(), isSpam))
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Testlog SmsRepo", "Error reading SMS: ${e.message}")
+            }
+        }
+
+        return messages
+    }
+
+    suspend fun readCleanSms(context: Context): List<Sms> {
+        val messages = mutableListOf<Sms>()
+        val spamModel = SpamModel(context)
+
+        runBlocking {
+            try {
+                val contentResolver: ContentResolver = context.contentResolver
+                val uri: Uri = Telephony.Sms.Inbox.CONTENT_URI
+                val projection = arrayOf(
+                    Telephony.Sms.Inbox.ADDRESS,
+                    Telephony.Sms.Inbox.BODY,
+                    Telephony.Sms.Inbox.DATE
+                )
+
+                val cursor = contentResolver.query(
+                    uri,
+                    projection,
+                    null,
+                    null,
+                    Telephony.Sms.Inbox.DEFAULT_SORT_ORDER
+                )
+
+                cursor?.use {
+                    val senderIndex = it.getColumnIndex(Telephony.Sms.Inbox.ADDRESS)
+                    val bodyIndex = it.getColumnIndex(Telephony.Sms.Inbox.BODY)
+                    val dateIndex = it.getColumnIndex(Telephony.Sms.Inbox.DATE)
+
+                    while (it.moveToNext()) {
+                        val sender = it.getString(senderIndex)
+                        val messageBody = it.getString(bodyIndex)
+                        val timestamp = it.getLong(dateIndex)
+                        val isSpam = spamModel.classify(messageBody)
+
+                        if(isSpam != "Spam") {
+                            messages.add(Sms(sender, messageBody, randomAvatarUrl(), isSpam))
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e("Testlog SmsRepo", "Error reading SMS: ${e.message}")
+            }
         }
 
         return messages

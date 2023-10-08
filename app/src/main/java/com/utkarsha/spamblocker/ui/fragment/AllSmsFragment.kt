@@ -1,18 +1,17 @@
 package com.utkarsha.spamblocker.ui.fragment
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.utkarsha.spamblocker.R
 import com.utkarsha.spamblocker.adapter.SmsAdapter
 import com.utkarsha.spamblocker.databinding.FragmentAllSmsBinding
 import com.utkarsha.spamblocker.repository.SmsRepo
 import com.utkarsha.spamblocker.utils.SmsPermsManager
+import kotlinx.coroutines.runBlocking
 
 class AllSmsFragment : Fragment() {
 
@@ -36,19 +35,23 @@ class AllSmsFragment : Fragment() {
     }
 
     private fun setupRecyclerView() {
-        allSmsRecyclerView = binding.allSmsRecyclerView
-        allSmsRecyclerView.setHasFixedSize(true)
-        allSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-        allSmsAdapter = SmsAdapter(SmsRepo.readAllSms(requireContext()))
-        allSmsRecyclerView.adapter = allSmsAdapter
+        runBlocking {
+            allSmsRecyclerView = binding.allSmsRecyclerView
+            allSmsRecyclerView.setHasFixedSize(true)
+            allSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            allSmsAdapter = SmsAdapter(SmsRepo.readAllSms(requireContext()), requireContext())
+            allSmsRecyclerView.adapter = allSmsAdapter
 
-        if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {
-            Log.d("Testlog All", "SMS Read Permission granted")
-        } else {
-            Log.d("Testlog All", "SMS Read Permission not granted")
-            SmsPermsManager.requestReadSmsPermission(requireActivity())
+            if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {
+                //Log.d("Testlog All", "SMS Read Permission granted")
+            } else {
+                //Log.d("Testlog All", "SMS Read Permission not granted")
+                SmsPermsManager.requestReadSmsPermission(requireActivity())
+            }
         }
     }
+
+
 
 
     override fun onDestroy() {

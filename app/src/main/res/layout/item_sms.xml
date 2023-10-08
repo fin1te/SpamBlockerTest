@@ -2,15 +2,13 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/pastEventCardView"
+    android:id="@+id/itemCardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="4dp"
-    android:layout_marginVertical="2dp"
+    android:layout_marginVertical="1dp"
     android:clickable="true"
     android:focusable="true"
     app:cardBackgroundColor="@color/black"
-    app:cardCornerRadius="15dp"
     app:cardElevation="0dp"
     tools:cardBack="@color/google_red_background">
 
@@ -43,7 +41,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:ignore="ContentDescription"
-                tools:src="@tools:sample/avatars" />
+                tools:srcCompat="@tools:sample/avatars" />
 
         </androidx.cardview.widget.CardView>
 
@@ -56,6 +54,7 @@
             android:layout_marginEnd="40dp"
             android:textSize="17sp"
             android:textStyle="bold"
+            android:textColor="?attr/colorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/itemPastImage"
             app:layout_constraintTop_toTopOf="@+id/itemPastImage"
