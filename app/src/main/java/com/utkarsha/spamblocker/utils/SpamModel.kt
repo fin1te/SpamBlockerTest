@@ -7,17 +7,30 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.runBlocking
 import org.tensorflow.lite.support.label.Category
 import org.tensorflow.lite.task.core.BaseOptions
+import org.tensorflow.lite.task.text.nlclassifier.BertNLClassifier
 import org.tensorflow.lite.task.text.nlclassifier.NLClassifier
 import java.util.concurrent.ScheduledThreadPoolExecutor
 
 class SpamModel(context: Context) {
 
     private var nlClassifier: NLClassifier
+    //private lateinit var bertClassifier: BertNLClassifier
     //private lateinit var executor: ScheduledThreadPoolExecutor
 
     init {
         val baseOptionsBuilder = BaseOptions.builder()
+        //baseOptionsBuilder.useNnapi()
         val baseOptions = baseOptionsBuilder.build()
+
+//        val options = BertNLClassifier.BertNLClassifierOptions
+//            .builder()
+//            .setBaseOptions(baseOptions)
+//            .build()
+//
+//        bertClassifier = BertNLClassifier.createFromFileAndOptions(
+//            context,
+//            BERT_MODEL,
+//            options)
 
         val options = NLClassifier.NLClassifierOptions.builder()
             .setBaseOptions(baseOptions)
@@ -25,7 +38,7 @@ class SpamModel(context: Context) {
 
         nlClassifier = NLClassifier.createFromFileAndOptions(
             context,
-            EPOCH_40_MODEL,
+            SST4_EPOCH_250_MODEL,
             options
         )
 
@@ -39,6 +52,7 @@ class SpamModel(context: Context) {
 
     }
 
+
     suspend fun classify(text: String): String {
         var isSpam = ""
 
@@ -50,20 +64,13 @@ class SpamModel(context: Context) {
         }
 
         return isSpam
-
-        //            executor = ScheduledThreadPoolExecutor(1)
-//            executor.execute {
-//                val results: List<Category> = nlClassifier.classify(text)
-//
-//                isSpam = if(results[0].score >= 0.50) "Not Spam" else "Spam"
-//
-//                Log.d("Testlog", "${text.substring(0, minOf(text.length, 15))} Result :    $isSpam")
-//
-//            }
     }
 
     companion object {
-        const val EPOCH_40_MODEL = "epoch_40_sst3.tflite"
+        const val SST4_EPOCH_25_MODEL = "sst4_epoch25_awe.tflite"
+        const val SST4_EPOCH_250_MODEL = "sst4_epoch_250_awe.tflite"
+        const val SST4_EPOCH_50_MODEL = "sst4_epoch_50_awe.tflite"
+        const val SST4_EPOCH_100_MODEL = "sst4_epoch100_awe.tflite"
     }
 
 }

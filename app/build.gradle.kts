@@ -18,6 +18,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    androidResources {
+        noCompress("tflite")
+    }
+
     buildFeatures {
         viewBinding = true
     }
@@ -60,4 +64,6 @@ dependencies {
 
     // Import the Task Vision Library dependency (NNAPI is included)
     implementation ("org.tensorflow:tensorflow-lite-task-text:0.4.4")
+    implementation ("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.0")
+    implementation ("org.tensorflow:tensorflow-lite-gpu:2.9.0")
 }
