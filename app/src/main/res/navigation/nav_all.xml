@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_all"
+    app:startDestination="@id/allSmsFragment">
+
+
+    <fragment
+        android:id="@+id/allSmsFragment"
+        android:name="com.utkarsha.spamblocker.ui.fragment.AllSmsFragment"
+        android:label="fragment_all_sms"
+        tools:layout="@layout/fragment_all_sms" />
+</navigation>

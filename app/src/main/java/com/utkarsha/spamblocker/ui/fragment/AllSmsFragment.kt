@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.utkarsha.spamblocker.adapter.SmsAdapter
 import com.utkarsha.spamblocker.databinding.FragmentAllSmsBinding
 import com.utkarsha.spamblocker.repository.SmsRepo
+import com.utkarsha.spamblocker.repository.TestSmsRepo
 import com.utkarsha.spamblocker.utils.SmsPermsManager
 import kotlinx.coroutines.runBlocking
 
@@ -39,7 +40,10 @@ class AllSmsFragment : Fragment() {
             allSmsRecyclerView = binding.allSmsRecyclerView
             allSmsRecyclerView.setHasFixedSize(true)
             allSmsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+//            allSmsAdapter = SmsAdapter(SmsRepo.readAllSms(requireContext()), requireContext())
             allSmsAdapter = SmsAdapter(SmsRepo.readAllSms(requireContext()), requireContext())
+
             allSmsRecyclerView.adapter = allSmsAdapter
 
             if(SmsPermsManager.isReadSmsPermissionGranted(requireActivity())) {

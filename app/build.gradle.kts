@@ -51,6 +51,8 @@ dependencies {
     implementation(libs.material)
     implementation(libs.constraintlayout)
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.navigation.fragment.ktx)
+    implementation(libs.androidx.navigation.ui.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -66,4 +68,5 @@ dependencies {
     implementation ("org.tensorflow:tensorflow-lite-task-text:0.4.4")
     implementation ("org.tensorflow:tensorflow-lite-gpu-delegate-plugin:0.4.0")
     implementation ("org.tensorflow:tensorflow-lite-gpu:2.9.0")
+    testImplementation("org.mockito:mockito-core:3.12.4")
 }

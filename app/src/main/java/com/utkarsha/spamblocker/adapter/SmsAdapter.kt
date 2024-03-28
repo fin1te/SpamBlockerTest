@@ -1,18 +1,22 @@
 package com.utkarsha.spamblocker.adapter
 
 import android.content.Context
+import android.graphics.Color
+import android.text.util.Linkify
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.Adapter
 import com.bumptech.glide.Glide
 import com.utkarsha.spamblocker.R
 import com.utkarsha.spamblocker.model.Sms
+import com.utkarsha.spamblocker.model.testSms
 import com.utkarsha.spamblocker.utils.SpamModel
 import kotlinx.coroutines.runBlocking
 
@@ -32,92 +36,21 @@ class SmsAdapter(private val message: List<Sms>, private val context : Context) 
         holder.apply {
             title.text = sms.title
             body.text = sms.body
+//            body.autoLinkMask = Linkify.ALL
 
             if(sms.isSpam == "Spam") {
+//                body.autoLinkMask = 0
+                body.linksClickable = false
+                body.isClickable = false
+//                body.setLinkTextColor(context.getColor(android.R.color.white))
+
                 background.setCardBackgroundColor(context.getColor(R.color.spam_red))
+                background.setOnClickListener {
+                    Toast.makeText(context, "This link spam!", Toast.LENGTH_SHORT).show()
+                }
                 //body.setTextColor(context.getColor(R.color.black))
-            }
-
-            when (diceRoll) {
-                1 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_1).into(image)
-                    diceRoll++
-                }
-
-                2 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_2).into(image)
-                    diceRoll++
-                }
-
-                3 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_3).into(image)
-                    diceRoll++
-                }
-
-                4 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_4).into(image)
-                    diceRoll++
-                }
-
-                5 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_5).into(image)
-                    diceRoll++
-                }
-
-                6 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_6).into(image)
-                    diceRoll++
-                }
-
-                7 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_7).into(image)
-                    diceRoll++
-                }
-
-                8 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_8).into(image)
-                    diceRoll++
-                }
-
-                9 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_9).into(image)
-                    diceRoll++
-                }
-
-                10 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_10).into(image)
-                    diceRoll++
-                }
-
-                11 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_11).into(image)
-                    diceRoll++
-                }
-
-                12 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_12).into(image)
-                    diceRoll++
-                }
-
-                13 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_13).into(image)
-                    diceRoll++
-                }
-
-                14 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_14).into(image)
-                    diceRoll++
-                }
-
-                15 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_15).into(image)
-                    diceRoll++
-                }
-
-                16 -> {
-                    Glide.with(holder.itemView.context).load(R.drawable.avatar_16).into(image)
-                    diceRoll = 1
-                }
+            } else {
+                body.autoLinkMask = Linkify.ALL
             }
         }
     }
